@@ -17,12 +17,12 @@ public class MainApp {
             JButton b1 = new JButton("1. Generar cliente");
             JButton b2 = new JButton("2. Generar camión");
             JButton b3 = new JButton("3. Revisión (buscar)");
-            JButton b4 = new JButton("4. Nueva revisión");
+            JButton b4 = new JButton("4. Nueva Venta");
 
             b1.addActionListener(e -> new ClienteForm(frame).setVisible(true));
             b2.addActionListener(e -> new CamionForm(frame).setVisible(true));
             b3.addActionListener(e -> new RevisionSearch(frame).setVisible(true));
-            b4.addActionListener(e -> new NuevaRevision(frame).setVisible(true));
+            b4.addActionListener(e -> new VentaForm(frame).setVisible(true));
 
             p.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
             p.add(b1); p.add(b2); p.add(b3); p.add(b4);

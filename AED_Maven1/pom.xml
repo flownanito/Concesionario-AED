@@ -1,7 +1,7 @@
 <!-- 
   pom.xml BÁSICO para un proyecto Java con MariaDB .
   - Mantengo SOLO lo imprescindible para que entiendan la estructura.
-  - con Java 25 (LTS) y añado el driver JDBC de MariaDB.
+  - con Java 23 (LTS) y añado el driver JDBC de MariaDB.
   - NetBeans detecta todo automáticamente al abrir el proyecto.
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -21,7 +21,7 @@
 <description>Esqueleto mínimo de Maven con Java 25 y driver MariaDB</description>
 <!--  Propiedades útiles en un solo sitio para no repetir valores  -->
 <properties>
-<maven.compiler.release>25</maven.compiler.release>
+<maven.compiler.release>23</maven.compiler.release>
 <!--  Compilo para Java 25  -->
 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <!--  Acentos bien  -->
