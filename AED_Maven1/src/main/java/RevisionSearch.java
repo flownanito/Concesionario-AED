@@ -19,7 +19,7 @@ public class RevisionSearch extends JDialog {
         tfIdCliente = new JTextField(12);
         tfIdCamion = new JTextField(12);
         JButton btnBuscar = new JButton("Buscar");
-        JButton btnNueva = new JButton("Nueva Revisión");
+        JButton btnNueva = new JButton("Nueva Revisión");;
 
         top.add(new JLabel("ID Cliente:")); top.add(tfIdCliente); top.add(new JLabel(""));
         top.add(new JLabel("ID Camión:")); top.add(tfIdCamion); top.add(btnBuscar);

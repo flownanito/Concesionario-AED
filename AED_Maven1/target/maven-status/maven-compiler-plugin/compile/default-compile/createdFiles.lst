@@ -4,13 +4,7 @@ VentanaUsuarios.class
 VentaForm.class
 NuevaRevision.class
 VentanaUsuarios$1.class
-Models\Venta$Cliente.class
-Models\Revision.class
-Models\Venta.class
-Models\Camion.class
 DataStore.class
-Models\Cliente.class
-Models\Venta$Camion.class
 RevisionSearch.class
 CamionForm.class
 ClienteForm.class
