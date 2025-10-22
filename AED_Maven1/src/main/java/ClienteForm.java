@@ -49,6 +49,7 @@ public class ClienteForm extends JDialog {
         c.gridx=1;
         Integer[] nums = new Integer[10];
         for(int i=0;i<10;i++) nums[i]=i+1;
+        
         cbNumTelefonos = new JComboBox<>(nums);
         cbNumTelefonos.setSelectedIndex(0);
         JButton btnGenerarTelefonos = new JButton("Generar campos");
@@ -62,10 +63,14 @@ public class ClienteForm extends JDialog {
         telefonosPanel = new JPanel();
         telefonosPanel.setLayout(new BoxLayout(telefonosPanel, BoxLayout.Y_AXIS));
         telefonosPanel.setBorder(BorderFactory.createTitledBorder("Teléfonos"));
-        telefonosPanel.setPreferredSize(new Dimension(420,120));
-        JScrollPane sp = new JScrollPane(telefonosPanel);
-        form.add(sp, c);
 
+        //JScrollPane con scroll vertical pero segun necesidad
+        JScrollPane sp = new JScrollPane(telefonosPanel,
+        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        sp.setPreferredSize(new Dimension(420, 120)); // tamaño visible del scroll
+        form.add(sp, c);
+        
         btnGenerarTelefonos.addActionListener(e -> {
             int cantidad = (Integer) cbNumTelefonos.getSelectedItem();
             actualizarTelefonos(cantidad);
