@@ -25,4 +25,10 @@ public class Cliente {
     public void setCiudad(String ciudad) { this.ciudad = ciudad; }
     public List<String> getTelefonos() { return telefonos; }
     public void setTelefonos(List<String> telefonos) { this.telefonos = telefonos; }
+    
+    
+    @Override
+    public String toString() {
+        return id + " - " + nombre;
+    }
 }
