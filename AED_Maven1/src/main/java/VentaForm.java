@@ -34,7 +34,15 @@ public class VentaForm extends JDialog {
         form.add(new JLabel("Cliente:"), c);
         c.gridx = 1;
         cbCliente = new JComboBox<>(DataStore.CLIENTES.toArray(new Cliente[0]));
+        cbCliente.setEditable(true);
         form.add(cbCliente, c);
+
+        //  Boton Cliente
+        c.gridx = 2;
+        JButton btnBuscarCliente = new JButton("Buscar");
+        form.add(btnBuscarCliente, c);
+        
+        btnBuscarCliente.addActionListener(e -> buscarCliente());
 
         // 🔹 Camión 
         c.gridx = 0;
@@ -44,14 +52,14 @@ public class VentaForm extends JDialog {
         cbCamion = new JComboBox<>(DataStore.CAMIONES.toArray(new Camion[0]));
         cbCamion.setEditable(true);
         form.add(cbCamion, c);
-        
+
         //Boton Camion
         c.gridx = 2;
         JButton btnBuscarCamion = new JButton("Buscar");
         form.add(btnBuscarCamion, c);
-        
+
         //Accion del Boton
-        btnBuscarCamion.addActionListener( e -> buscarCamion());
+        btnBuscarCamion.addActionListener(e -> buscarCamion());
 
         // 🔹 Estado del vehículo
         c.gridx = 0;
@@ -104,46 +112,82 @@ public class VentaForm extends JDialog {
         add(botones, BorderLayout.SOUTH);
     }
 
-    private void buscarCamion() {
-    String input = cbCamion.getEditor().getItem().toString().trim();
-    String estado = (String) cbEstado.getSelectedItem();
-    String fecha = tfFechaCompra.getText();
+    private void buscarCliente() {
+        String input = cbCliente.getEditor().getItem().toString().trim();
 
-    if (input.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Introduce ID/Matricula para buscar");
-        return;
-    }
+        if (input.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Introduce ID/Nombre para buscar");
+            return;
+        }
 
-    Camion encontrado = null;
-    for (Camion c : DataStore.CAMIONES) {
-        if (c.getId().equalsIgnoreCase(input) || c.getMatricula().equalsIgnoreCase(input)) {
-            encontrado = c;
-            break;
+        Cliente encontrado = null;
+        for (Cliente c : DataStore.CLIENTES) {
+            if (c.getId().equalsIgnoreCase(input) || c.getNombre().equalsIgnoreCase(input)) {
+                encontrado = c;
+                break;
+            }
+        }
+
+        if (encontrado != null) {
+            // Selecciona el cliente en el JComboBox
+            cbCliente.setSelectedItem(encontrado);
+
+            // Mostrar datos sólo si existe
+            String datosCliente = "===== DATOS CLIENTE =====\n"
+                    + "ID: " + encontrado.getId() + "\n"
+                    + "NIF: " + encontrado.getNif() + "\n"
+                    + "Nombre: " + encontrado.getNombre() + "\n"
+                    + "Dirección: " + encontrado.getDireccion() + "\n"
+                    + "Ciudad: " + encontrado.getCiudad() + "\n\n";
+
+            areaResumen.setText(datosCliente);
+            mostrarResumen();
+
+        } else {
+            areaResumen.setText(""); // limpia la info si no se encuentra
+            JOptionPane.showMessageDialog(this, "Cliente no encontrado");
         }
     }
 
-    if (encontrado != null) {
-        // Selecciona el camión en el JComboBox
-        cbCamion.setSelectedItem(encontrado);
+    private void buscarCamion() {
+        String input = cbCamion.getEditor().getItem().toString().trim();
+        String estado = (String) cbEstado.getSelectedItem();
+        String fecha = tfFechaCompra.getText();
 
-        // Mostrar datos sólo si existe
-        String datosCamion = "===== DATOS CAMION =====\n"
-                + "ID: " + encontrado.getId() + "\n"
-                + "Marca: " + encontrado.getMarca() + "\n"
-                + "Modelo: " + encontrado.getModelo() + "\n"
-                + "Matrícula: " + encontrado.getMatricula() + "\n"
-                + "Precio de venta: " + encontrado.getPrecioVenta() + " €\n"
-                + "Estado actual: " + estado + "\n\n";
+        if (input.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Introduce ID/Matricula para buscar");
+            return;
+        }
 
-        areaResumen.setText(datosCamion);
-        mostrarResumen();
+        Camion encontrado = null;
+        for (Camion c : DataStore.CAMIONES) {
+            if (c.getId().equalsIgnoreCase(input) || c.getMatricula().equalsIgnoreCase(input)) {
+                encontrado = c;
+                break;
+            }
+        }
 
-    } else {
-        areaResumen.setText(""); // limpia la info si no se encuentra
-        JOptionPane.showMessageDialog(this, "Camion no encontrado");
+        if (encontrado != null) {
+            // Selecciona el camión en el JComboBox
+            cbCamion.setSelectedItem(encontrado);
+
+            // Mostrar datos sólo si existe
+            String datosCamion = "===== DATOS CAMION =====\n"
+                    + "ID: " + encontrado.getId() + "\n"
+                    + "Marca: " + encontrado.getMarca() + "\n"
+                    + "Modelo: " + encontrado.getModelo() + "\n"
+                    + "Matrícula: " + encontrado.getMatricula() + "\n"
+                    + "Precio de venta: " + encontrado.getPrecioVenta() + " €\n"
+                    + "Estado actual: " + estado + "\n\n";
+
+            areaResumen.setText(datosCamion);
+            mostrarResumen();
+
+        } else {
+            areaResumen.setText(""); // limpia la info si no se encuentra
+            JOptionPane.showMessageDialog(this, "Camion no encontrado");
+        }
     }
-}
-
 
     private void mostrarResumen() {
         Cliente cliente = (Cliente) cbCliente.getSelectedItem();
