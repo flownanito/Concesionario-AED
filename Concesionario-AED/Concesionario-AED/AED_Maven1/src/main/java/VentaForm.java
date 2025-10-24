@@ -32,14 +32,7 @@ public class VentaForm extends JDialog {
         form.add(new JLabel("Cliente:"), c);
         c.gridx = 1;
         cbCliente = new JComboBox<>(DataStore.CLIENTES.toArray(new Cliente[0]));
-        cbCliente.setEditable(true);
         form.add(cbCliente, c);
-        
-        c.gridx = 2;
-        JButton btnBuscar = new JButton("Buscar");
-        form.add(btnBuscar, c);
-        
-        btnBuscar.addActionListener(e -> buscarCliente());
 
         // 🔹 Camión
         c.gridx = 0; c.gridy++;
@@ -161,31 +154,6 @@ public class VentaForm extends JDialog {
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Error al guardar el archivo: " + ex.getMessage());
             }
-        }
-    }
-    
-    private void buscarCliente() {
-        String input = cbCliente.getEditor().getItem().toString().trim();
-        
-        if(input.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Introduce ID/NIF para buscar");
-            return;
-        }
-        
-        Cliente encontrado = null;
-        for (Cliente c: DataStore.CLIENTES) {
-            if (c.getId().equalsIgnoreCase(input) || c.getNif().equalsIgnoreCase(input)){
-                encontrado = c;
-                break;
-            }
-        } 
-        
-        
-        if (encontrado !=null){
-            cbCliente.setSelectedItem(encontrado);
-            mostrarResumen();
-        } else {
-            JOptionPane.showMessageDialog(this, "Cliente no encontrado");
         }
     }
 }
