@@ -6,5 +6,6 @@ NuevaRevision.class
 VentanaUsuarios$1.class
 DataStore.class
 RevisionSearch.class
+Utils\Validador.class
 CamionForm.class
 ClienteForm.class

@@ -2,6 +2,8 @@
 
 import Models.Camion;
 
+import Utils.Validador; // añadir al inicio
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -72,30 +74,43 @@ public class CamionForm extends JDialog {
         botones.add(cancelar);
 
         guardar.addActionListener(e -> {
-            if (tfId.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Genera el ID del camión primero.");
-                return;
-            }
-            Camion cobj = new Camion();
-            cobj.setId(tfId.getText().trim());
-            cobj.setMarca((String)cbMarca.getSelectedItem());
-            cobj.setModelo((String)cbModelo.getSelectedItem());
-            cobj.setColor((String)cbColor.getSelectedItem());
-            cobj.setMatricula(tfMatricula.getText().trim());
-            try {
-                double p = Double.parseDouble(tfPrecioVenta.getText().trim());
-                cobj.setPrecioVenta(p);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Precio no válido. Introduce número.");
-                return;
-            }
-            DataStore.CAMIONES.add(cobj);
-            JOptionPane.showMessageDialog(this, "Camión añadido: " + cobj.getId());
-            // limpiar para nuevo
-            tfId.setText("");
-            tfMatricula.setText("");
-            tfPrecioVenta.setText("");
-        });
+    if (tfId.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Genera el ID del camión primero.");
+        return;
+    }
+
+    String matricula = tfMatricula.getText().trim();
+    String precioStr = tfPrecioVenta.getText().trim();
+
+    // Validaciones
+    if (!Validador.validarMatricula(matricula)) {
+        JOptionPane.showMessageDialog(this, "Matrícula no válida. Debe tener 4 números, un espacio y 3 letras mayúsculas (ej: 1234 ABC).");
+        return;
+    }
+
+    if (!Validador.validarPrecio(precioStr)) {
+        JOptionPane.showMessageDialog(this, "Precio no válido. Usa formato numérico con punto decimal (ej: 100.00).");
+        return;
+    }
+
+    // Si todo es correcto
+    Camion cobj = new Camion();
+    cobj.setId(tfId.getText().trim());
+    cobj.setMarca((String) cbMarca.getSelectedItem());
+    cobj.setModelo((String) cbModelo.getSelectedItem());
+    cobj.setColor((String) cbColor.getSelectedItem());
+    cobj.setMatricula(matricula);
+    cobj.setPrecioVenta(Double.parseDouble(precioStr));
+
+    DataStore.CAMIONES.add(cobj);
+    JOptionPane.showMessageDialog(this, "Camión añadido: " + cobj.getId());
+
+    // limpiar
+    tfId.setText("");
+    tfMatricula.setText("");
+    tfPrecioVenta.setText("");
+});
+
 
         cancelar.addActionListener(e -> dispose());
 

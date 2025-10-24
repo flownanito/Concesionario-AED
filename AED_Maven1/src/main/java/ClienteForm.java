@@ -1,4 +1,5 @@
 import Models.Cliente;
+import Utils.Validador;
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,26 +85,61 @@ public class ClienteForm extends JDialog {
         botones.add(cancelar);
 
         guardar.addActionListener(e -> {
-            Cliente cliente = new Cliente();
-            cliente.setId(tfId.getText().trim());
-            cliente.setNif(tfNif.getText().trim());
-            cliente.setNombre(tfNombre.getText().trim());
-            cliente.setDireccion(tfDireccion.getText().trim());
-            cliente.setCiudad(tfCiudad.getText().trim());
-            java.util.List<String> telefonos = new ArrayList<>();
-            for (JTextField f : telefonoFields) {
-                String t = f.getText().trim();
-                if (!t.isEmpty()) telefonos.add(t);
-            }
-            cliente.setTelefonos(telefonos);
-            DataStore.CLIENTES.add(cliente);
-            JOptionPane.showMessageDialog(this, "Cliente guardado en memoria: " + cliente.getId());
-            // Generar nuevo id para el siguiente cliente
-            tfId.setText(DataStore.genererIdCliente());
-            // limpiar campos
-            tfNif.setText(""); tfNombre.setText(""); tfDireccion.setText(""); tfCiudad.setText("");
-            actualizarTelefonos(0);
-        });
+    String nif = tfNif.getText().trim();
+    String ciudad = tfCiudad.getText().trim();
+    String direccion = tfDireccion.getText().trim();
+
+    // Validar NIF
+    if (!Validador.validarNIF(nif)) {
+        JOptionPane.showMessageDialog(this, "NIF no válido. Debe tener 8 números y una letra mayúscula (ej: 12345678A).");
+        return;
+    }
+
+    // Validar dirección
+    if (!direccion.matches("^c/\\s.+\\s+n/\\s+\\d+$")) {
+        JOptionPane.showMessageDialog(this, "Dirección no válida. Debe seguir el formato: c/ Calle n/ Número");
+        return;
+    }
+
+    // Validar ciudad (solo letras, máx. 50)
+    if (!ciudad.matches("^[A-Za-zÁÉÍÓÚáéíóúñÑ\\s]{1,50}$")) {
+        JOptionPane.showMessageDialog(this, "Ciudad no válida. Solo letras (máx. 50 caracteres).");
+        return;
+    }
+
+    // Validar teléfonos
+    for (JTextField f : telefonoFields) {
+        String t = f.getText().trim();
+        if (!t.isEmpty() && !Validador.validarTelefono(t)) {
+            JOptionPane.showMessageDialog(this, "Teléfono no válido. Debe tener exactamente 9 números.");
+            return;
+        }
+    }
+
+    // Si todo es válido, crear cliente
+    Cliente cliente = new Cliente();
+    cliente.setId(tfId.getText().trim());
+    cliente.setNif(nif);
+    cliente.setNombre(tfNombre.getText().trim());
+    cliente.setDireccion(direccion);
+    cliente.setCiudad(ciudad);
+
+    java.util.List<String> telefonos = new ArrayList<>();
+    for (JTextField f : telefonoFields) {
+        String t = f.getText().trim();
+        if (!t.isEmpty()) telefonos.add(t);
+    }
+    cliente.setTelefonos(telefonos);
+
+    DataStore.CLIENTES.add(cliente);
+    JOptionPane.showMessageDialog(this, "Cliente guardado en memoria: " + cliente.getId());
+
+    // limpiar
+    tfId.setText(DataStore.genererIdCliente());
+    tfNif.setText(""); tfNombre.setText(""); tfDireccion.setText(""); tfCiudad.setText("");
+    actualizarTelefonos(0);
+});
+
 
         cancelar.addActionListener(e -> dispose());
 
