@@ -29,10 +29,10 @@ public class Validador {
     }
 
     // Valida precio: formato monetario con hasta 2 decimales (ej. 100 o 100.00)
-    public static boolean validarPrecio(String precio) {
+    /*public static boolean validarPrecio(String precio) {
         if (precio == null) return false;
         Pattern patron = Pattern.compile("^[0-9]+(\\.[0-9]{1,2})?$");
         Matcher mat = patron.matcher(precio.trim());
         return mat.matches();
-    }
+    }*/
 }

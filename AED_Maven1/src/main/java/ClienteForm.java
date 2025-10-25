@@ -1,4 +1,5 @@
 import Models.Cliente;
+import DAO.ClienteDAO;
 import Utils.Validador;
 
 import javax.swing.*;
@@ -131,13 +132,21 @@ public class ClienteForm extends JDialog {
     }
     cliente.setTelefonos(telefonos);
 
-    DataStore.CLIENTES.add(cliente);
-    JOptionPane.showMessageDialog(this, "Cliente guardado en memoria: " + cliente.getId());
-
-    // limpiar
-    tfId.setText(DataStore.genererIdCliente());
-    tfNif.setText(""); tfNombre.setText(""); tfDireccion.setText(""); tfCiudad.setText("");
-    actualizarTelefonos(0);
+    //Guarda en la base datos
+            boolean ok = ClienteDAO.insertarCliente(cliente);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Cliente guardado en la base de datos correctamente: " + cliente.getId());
+                // limpiar campos
+                tfId.setText("");
+                tfNif.setText("");
+                tfNombre.setText("");
+                tfDireccion.setText("");
+                tfCiudad.setText("");
+                actualizarTelefonos(0);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al guardar el cliente en la base de datos.");
+            }
+    
 });
 
 

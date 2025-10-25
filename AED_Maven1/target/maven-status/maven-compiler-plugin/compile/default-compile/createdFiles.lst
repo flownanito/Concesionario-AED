@@ -5,6 +5,9 @@ VentaForm.class
 NuevaRevision.class
 VentanaUsuarios$1.class
 DataStore.class
+DAO\CamionDAO.class
 RevisionSearch.class
+Utils\ConexionDB.class
 CamionForm.class
+DAO\ClienteDAO.class
 ClienteForm.class

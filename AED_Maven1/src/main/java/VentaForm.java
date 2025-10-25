@@ -1,6 +1,7 @@
 
 import Models.Cliente;
 import Models.Camion;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -161,7 +162,7 @@ public class VentaForm extends JDialog {
 
         Camion encontrado = null;
         for (Camion c : DataStore.CAMIONES) {
-            if (c.getId().equalsIgnoreCase(input) || c.getMatricula().equalsIgnoreCase(input)) {
+            if (c.getId_camion().equalsIgnoreCase(input) || c.getMatricula().equalsIgnoreCase(input)) {
                 encontrado = c;
                 break;
             }
@@ -173,7 +174,7 @@ public class VentaForm extends JDialog {
 
             // Mostrar datos sólo si existe
             String datosCamion = "===== DATOS CAMION =====\n"
-                    + "ID: " + encontrado.getId() + "\n"
+                    + "ID: " + encontrado.getId_camion() + "\n"
                     + "Marca: " + encontrado.getMarca() + "\n"
                     + "Modelo: " + encontrado.getModelo() + "\n"
                     + "Matrícula: " + encontrado.getMatricula() + "\n"
@@ -208,7 +209,7 @@ public class VentaForm extends JDialog {
                 + "Dirección: " + cliente.getDireccion() + "\n"
                 + "Ciudad: " + cliente.getCiudad() + "\n\n"
                 + "===== DATOS DEL CAMIÓN =====\n"
-                + "ID: " + camion.getId() + "\n"
+                + "ID: " + camion.getId_camion() + "\n"
                 + "Marca: " + camion.getMarca() + "\n"
                 + "Modelo: " + camion.getModelo() + "\n"
                 + "Matrícula: " + camion.getMatricula() + "\n"
