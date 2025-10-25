@@ -1,5 +1,6 @@
 package Models;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 public class Revision {
@@ -8,6 +9,7 @@ public class Revision {
     private String idCamion;
     private Map<String, Boolean> checklist;
     private String detalles;
+    private LocalDate fechaRevision;
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -19,4 +21,6 @@ public class Revision {
     public void setChecklist(Map<String, Boolean> checklist) { this.checklist = checklist; }
     public String getDetalles() { return detalles; }
     public void setDetalles(String detalles) { this.detalles = detalles; }
+    public LocalDate getFechaRevision() {return fechaRevision;}
+    public void setFechaRevision(LocalDate fechaRevision) {this.fechaRevision = fechaRevision;}
 }

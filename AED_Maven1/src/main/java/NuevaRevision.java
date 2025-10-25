@@ -1,7 +1,8 @@
 import Models.Revision;
+import DAO.RevisionDAO; //  Importa tu DAO
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,12 +19,20 @@ public class NuevaRevision extends JDialog {
 
         // Panel superior para IDs
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT,10,10));
-        top.add(new JLabel("ID Cliente:")); tfIdCliente = new JTextField(10); top.add(tfIdCliente);
-        top.add(new JLabel("ID Camión:")); tfIdCamion = new JTextField(10); top.add(tfIdCamion);
+        top.add(new JLabel("ID Cliente:")); 
+        tfIdCliente = new JTextField(10); 
+        top.add(tfIdCliente);
+        top.add(new JLabel("ID Camión:")); 
+        tfIdCamion = new JTextField(10); 
+        top.add(tfIdCamion);
         add(top, BorderLayout.NORTH);
 
         // Checklist
-        String[] items = {"frenos","aceite","agua","remolque","filtro_combustion","cabina","alineación","caja_cambios","correa","neumáticos","filtro_aire"};
+        String[] items = {
+            "frenos","aceite","agua","remolque","filtro_combustion",
+            "cabina","alineación","caja_cambios","correa",
+            "neumáticos","filtro_aire"
+        };
         JPanel center = new JPanel(new GridLayout(0,2,8,8));
         center.setBorder(BorderFactory.createTitledBorder("Checklist (marcar si revisado)"));
         for (String it : items) {
@@ -49,33 +58,46 @@ public class NuevaRevision extends JDialog {
         JPanel bottom = new JPanel();
         JButton guardar = new JButton("Guardar Revisión");
         JButton cancelar = new JButton("Cerrar");
-        bottom.add(guardar); bottom.add(cancelar);
+        bottom.add(guardar); 
+        bottom.add(cancelar);
         add(bottom, BorderLayout.SOUTH);
 
         guardar.addActionListener(e -> guardarRevision());
         cancelar.addActionListener(e -> dispose());
     }
 
+    //  Método actualizado para guardar en la base de datos
     private void guardarRevision() {
         String idCliente = tfIdCliente.getText().trim();
         String idCamion = tfIdCamion.getText().trim();
+
         if (idCliente.isEmpty() || idCamion.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Introduce ID Cliente y ID Camión.");
             return;
         }
+
         Revision r = new Revision();
-        r.setId("R" + System.currentTimeMillis());
+        r.setId("R" + System.currentTimeMillis()); // ID temporal (no se usa en DB)
         r.setIdCliente(idCliente);
         r.setIdCamion(idCamion);
+        r.setFechaRevision(LocalDate.now()); //  Fecha actual
         Map<String, Boolean> checklist = new LinkedHashMap<>();
         checks.forEach((k,v) -> checklist.put(k, v.isSelected()));
         r.setChecklist(checklist);
         r.setDetalles(taDetalles.getText().trim());
-        DataStore.REVISIONES.add(r);
-        JOptionPane.showMessageDialog(this, "Revisión guardada en memoria: " + r.getId());
+
+        //  Guardar en la base de datos
+        boolean ok = RevisionDAO.insertarRevision(r);
+
+        if (ok) {
+            JOptionPane.showMessageDialog(this, "Revisión guardada correctamente en la base de datos.");
+        } else {
+            JOptionPane.showMessageDialog(this, " Error al guardar la revisión en la base de datos.");
+        }
 
         // limpiar campos
-        tfIdCliente.setText(""); tfIdCamion.setText("");
+        tfIdCliente.setText(""); 
+        tfIdCamion.setText("");
         checks.values().forEach(cb -> cb.setSelected(false));
         taDetalles.setText("");
         dispose();

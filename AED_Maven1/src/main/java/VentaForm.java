@@ -1,7 +1,10 @@
 
+import DAO.CamionDAO;
+import DAO.ClienteDAO;
 import Models.Cliente;
 import Models.Camion;
 
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -34,7 +37,8 @@ public class VentaForm extends JDialog {
         // 🔹 Cliente
         form.add(new JLabel("Cliente:"), c);
         c.gridx = 1;
-        cbCliente = new JComboBox<>(DataStore.CLIENTES.toArray(new Cliente[0]));
+        List<Cliente> listaClientes = ClienteDAO.obtenerTodosClientes();    //Conecxion con la tabla de la base datos
+        cbCliente = new JComboBox<>(listaClientes.toArray(new Cliente[0]));
         cbCliente.setEditable(true);
         form.add(cbCliente, c);
 
@@ -50,7 +54,8 @@ public class VentaForm extends JDialog {
         c.gridy++;
         form.add(new JLabel("Camión:"), c);
         c.gridx = 1;
-        cbCamion = new JComboBox<>(DataStore.CAMIONES.toArray(new Camion[0]));
+        List<Camion> listaCamiones = CamionDAO.obtenerTodosCamiones();      //Conecxion con la tabla de la base datos
+        cbCamion = new JComboBox<>(listaCamiones.toArray(new Camion[0]));
         cbCamion.setEditable(true);
         form.add(cbCamion, c);
 
@@ -122,7 +127,7 @@ public class VentaForm extends JDialog {
         }
 
         Cliente encontrado = null;
-        for (Cliente c : DataStore.CLIENTES) {
+        for (Cliente c : ClienteDAO.obtenerTodosClientes()) {
             if (c.getId().equalsIgnoreCase(input) || c.getNombre().equalsIgnoreCase(input)) {
                 encontrado = c;
                 break;
@@ -161,7 +166,7 @@ public class VentaForm extends JDialog {
         }
 
         Camion encontrado = null;
-        for (Camion c : DataStore.CAMIONES) {
+        for (Camion c : CamionDAO.obtenerTodosCamiones()) {
             if (c.getId_camion().equalsIgnoreCase(input) || c.getMatricula().equalsIgnoreCase(input)) {
                 encontrado = c;
                 break;
