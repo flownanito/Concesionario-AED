@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexionDB {
-    private static final String URL = "jdbc:mariadb://localhost:3306/concessionary_aed"; // o jdbc:mysql:// también funciona
+    private static final String URL = "jdbc:mariadb://localhost:3306/concessionary_aed"; //enlace de la base de datos
     private static final String USER = "root";
     private static final String PASSWORD = ""; // tu contraseña si tiene
 

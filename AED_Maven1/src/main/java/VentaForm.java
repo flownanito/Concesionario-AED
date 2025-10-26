@@ -1,8 +1,10 @@
 
 import DAO.CamionDAO;
 import DAO.ClienteDAO;
+import DAO.VentaDAO;
 import Models.Cliente;
 import Models.Camion;
+import Models.Venta;
 
 import java.util.List;
 import javax.swing.*;
@@ -34,7 +36,7 @@ public class VentaForm extends JDialog {
         c.gridx = 0;
         c.gridy = 0;
 
-        // 🔹 Cliente
+        //Cliente
         form.add(new JLabel("Cliente:"), c);
         c.gridx = 1;
         List<Cliente> listaClientes = ClienteDAO.obtenerTodosClientes();    //Conecxion con la tabla de la base datos
@@ -42,14 +44,14 @@ public class VentaForm extends JDialog {
         cbCliente.setEditable(true);
         form.add(cbCliente, c);
 
-        //  Boton Cliente
+        //Boton Cliente
         c.gridx = 2;
         JButton btnBuscarCliente = new JButton("Buscar");
         form.add(btnBuscarCliente, c);
-        
+
         btnBuscarCliente.addActionListener(e -> buscarCliente());
 
-        // 🔹 Camión 
+        //Camión 
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Camión:"), c);
@@ -67,7 +69,7 @@ public class VentaForm extends JDialog {
         //Accion del Boton
         btnBuscarCamion.addActionListener(e -> buscarCamion());
 
-        // 🔹 Estado del vehículo
+        //Estado del vehículo
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Estado del vehículo:"), c);
@@ -76,7 +78,7 @@ public class VentaForm extends JDialog {
         cbEstado = new JComboBox<>(estados);
         form.add(cbEstado, c);
 
-        // 🔹 Fecha de compra
+        //Fecha de compra
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Fecha de compra:"), c);
@@ -85,7 +87,7 @@ public class VentaForm extends JDialog {
         tfFechaCompra.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         form.add(tfFechaCompra, c);
 
-        // 🔹 Resumen
+        //Resumen
         c.gridx = 0;
         c.gridy++;
         c.gridwidth = 2;
@@ -95,7 +97,7 @@ public class VentaForm extends JDialog {
         scroll.setBorder(BorderFactory.createTitledBorder("Resumen de la venta"));
         form.add(scroll, c);
 
-        // 🔹 Botones
+        //Botones
         JPanel botones = new JPanel();
         JButton btnMostrar = new JButton("Mostrar resumen");
         JButton btnGuardar = new JButton("Registrar venta");
@@ -107,10 +109,8 @@ public class VentaForm extends JDialog {
         botones.add(btnCerrar);
 
         btnMostrar.addActionListener(e -> mostrarResumen());
-        btnGuardar.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Venta registrada correctamente.");
-            dispose();
-        });
+        btnGuardar.addActionListener(e -> registrarVenta());
+
         btnCerrar.addActionListener(e -> dispose());
         btnExportarTXT.addActionListener(e -> exportarTXT());
 
@@ -260,4 +260,38 @@ public class VentaForm extends JDialog {
             }
         }
     }
+
+    private void registrarVenta() {
+        // Obtener los objetos seleccionados
+        Cliente cliente = (Cliente) cbCliente.getSelectedItem();
+        Camion camion = (Camion) cbCamion.getSelectedItem();
+        String estado = (String) cbEstado.getSelectedItem();
+        String fecha = tfFechaCompra.getText();
+
+        // Validaciones
+        if (cliente == null || camion == null) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un cliente y un camión antes de registrar la venta.");
+            return;
+        }
+
+        // Crear objeto Venta
+        Venta venta = new Venta(
+                cliente.getId(), 
+                camion.getId_camion(), 
+                fecha, 
+                estado 
+        );
+
+        // Llamar al DAO para registrar en la base de datos
+        boolean exito = VentaDAO.registrarVenta(venta);
+
+        // Mostrar resultado
+        if (exito) {
+            JOptionPane.showMessageDialog(this, "Venta registrada correctamente en la base de datos.");
+            dispose(); // Cierra la ventana
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al registrar la venta. Revisa la conexión o los datos.");
+        }
+    }
+
 }

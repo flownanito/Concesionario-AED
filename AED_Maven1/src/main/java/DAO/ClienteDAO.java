@@ -13,7 +13,7 @@ public class ClienteDAO {
         String sql = "INSERT INTO cliente (id_cliente, nif, nombre_completo, direccion, ciudad) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = ConexionDB.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+            PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, c.getId());
             ps.setString(2, c.getNif());

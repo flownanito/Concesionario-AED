@@ -24,7 +24,7 @@ public class RevisionDAO {
         try (Connection con = ConexionDB.getConexion()) {
             con.setAutoCommit(false); //Transacción: si falla, se revierte todo
 
-            // 1️⃣ Insertar la revisión principal
+            //Insertar revisión principal
             int idRevisionGenerado = -1;
             try (PreparedStatement psRev = con.prepareStatement(sqlRevision, Statement.RETURN_GENERATED_KEYS)) {
                 psRev.setString(1, r.getIdCamion());
@@ -42,7 +42,7 @@ public class RevisionDAO {
                 return false;
             }
 
-            // 2️⃣ Insertar los detalles del checklist
+            // Insertar los detalles del checklist
             try (PreparedStatement psDet = con.prepareStatement(sqlDetalles)) {
                 psDet.setInt(1, idRevisionGenerado);
                 Map<String, Boolean> c = r.getChecklist();
