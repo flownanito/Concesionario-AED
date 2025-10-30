@@ -10,7 +10,7 @@ public class ClienteDAO {
 
     // Inserta un cliente en la tabla 'cliente'
     public static boolean insertarCliente(Cliente c) {
-        String sql = "INSERT INTO cliente (id_cliente, nif, nombre_completo, direccion, ciudad) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO cliente (id_cliente, nif, nombre, direccion, ciudad) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = ConexionDB.getConexion();
             PreparedStatement ps = con.prepareStatement(sql)) {

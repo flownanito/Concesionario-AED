@@ -1,7 +1,7 @@
 
 import Models.Camion;
 import DAO.CamionDAO;
-import Utils.Validador; // añadir al inicio
+import Utils.Validador;
 
 import javax.swing.*;
 import java.awt.*;

@@ -120,6 +120,7 @@ public class VentaForm extends JDialog {
 
     private void buscarCliente() {
         String input = cbCliente.getEditor().getItem().toString().trim();
+        
 
         if (input.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Introduce ID/Nombre para buscar");

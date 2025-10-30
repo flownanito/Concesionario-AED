@@ -1,5 +1,5 @@
 import Models.Revision;
-import DAO.RevisionDAO; //  Importa tu DAO
+import DAO.RevisionDAO;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
