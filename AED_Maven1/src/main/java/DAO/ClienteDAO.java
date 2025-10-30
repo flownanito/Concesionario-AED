@@ -49,32 +49,58 @@ public class ClienteDAO {
         }
     }
     
-public static boolean actualizarNombre(String idCliente, String nuevoNombre) {
+    public static boolean actualizarNIF(String idCliente, String nuevoNif) {
+        String sql = "UPDATE cliente SET nif = ? WHERE id_cliente = ?";
+        try (Connection con = ConexionDB.getConexion();
+        PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nuevoNif);
+            ps.setString(2, idCliente);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public static boolean actualizarNombre(String idCliente, String nuevoNombre) {
     String sql = "UPDATE cliente SET nombre = ? WHERE id_cliente = ?";
     try (Connection con = ConexionDB.getConexion();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+    PreparedStatement ps = con.prepareStatement(sql)) {
         ps.setString(1, nuevoNombre);
         ps.setString(2, idCliente);
         return ps.executeUpdate() > 0;
     } catch (SQLException e) {
         e.printStackTrace();
         return false;
+        }
     }
-}
-
-// Actualizar solo Ciudad
-public static boolean actualizarCiudad(String idCliente, String nuevaCiudad) {
-    String sql = "UPDATE cliente SET ciudad = ? WHERE id_cliente = ?";
-    try (Connection con = ConexionDB.getConexion();
+    
+    public static boolean actualizarDireccion(String idCliente, String nuevaDireccion) {
+        String sql = "UPDATE cliente SET direccion = ? WHERE id_cliente = ?";
+        try (Connection con = ConexionDB.getConexion();
+        PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nuevaDireccion);
+            ps.setString(2, idCliente);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    // Actualizar solo Ciudad
+    public static boolean actualizarCiudad(String idCliente, String nuevaCiudad) {
+        String sql = "UPDATE cliente SET ciudad = ? WHERE id_cliente = ?";
+        try (Connection con = ConexionDB.getConexion();
          PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setString(1, nuevaCiudad);
-        ps.setString(2, idCliente);
-        return ps.executeUpdate() > 0;
-    } catch (SQLException e) {
+            ps.setString(1, nuevaCiudad);
+            ps.setString(2, idCliente);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
         e.printStackTrace();
         return false;
+        }
     }
-}
 
     
     //Acceso a contenido de tabla clientes

@@ -35,19 +35,34 @@ public class ClienteForm extends JDialog {
         tfDireccion = new JTextField(20);
         tfCiudad = new JTextField(20);
 
+        
         form.add(new JLabel("ID cliente:"), c); c.gridx=1; form.add(tfId, c);
         c.gridx=0; c.gridy++;
         form.add(new JLabel("NIF:"), c); c.gridx=1; form.add(tfNif, c);
+        c.gridx=1; 
+        JButton btnActualizarNIF = new JButton("Actualizar");
+        c.gridx = 2; 
+        form.add(btnActualizarNIF, c);
+        
         c.gridx=0; c.gridy++;
         form.add(new JLabel("Nombre completo:"), c); c.gridx=1; form.add(tfNombre, c);
+        c.gridx=1; 
+        JButton btnActualizarNombre = new JButton("Actualizar");
+        c.gridx = 2; 
+        form.add(btnActualizarNombre, c);
+        
         c.gridx=0; c.gridy++;
         form.add(new JLabel("Dirección:"), c); c.gridx=1; form.add(tfDireccion, c);
+        c.gridx=1; 
+        JButton btnActualizarDireccion = new JButton("Actualizar");
+        c.gridx = 2; 
+        form.add(btnActualizarDireccion, c);
+        
         c.gridx=0; c.gridy++;
         form.add(new JLabel("Ciudad residencia:"), c); c.gridx=1; form.add(tfCiudad, c);
-        c.gridx=0; c.gridy++;
-        JButton btnActualizarCiudad = new JButton("Actualizar Ciudad");
-        c.gridx = 1; 
-        c.gridy++; 
+        c.gridx=1; 
+        JButton btnActualizarCiudad = new JButton("Actualizar");
+        c.gridx = 2; 
         form.add(btnActualizarCiudad, c);
 
         // Teléfonos dinámicos
