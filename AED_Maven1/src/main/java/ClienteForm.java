@@ -44,6 +44,11 @@ public class ClienteForm extends JDialog {
         form.add(new JLabel("Dirección:"), c); c.gridx=1; form.add(tfDireccion, c);
         c.gridx=0; c.gridy++;
         form.add(new JLabel("Ciudad residencia:"), c); c.gridx=1; form.add(tfCiudad, c);
+        c.gridx=0; c.gridy++;
+        JButton btnActualizarCiudad = new JButton("Actualizar Ciudad");
+        c.gridx = 1; 
+        c.gridy++; 
+        form.add(btnActualizarCiudad, c);
 
         // Teléfonos dinámicos
         c.gridx=0; c.gridy++;
