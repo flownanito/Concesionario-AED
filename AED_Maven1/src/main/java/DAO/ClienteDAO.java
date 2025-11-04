@@ -135,6 +135,46 @@ public class ClienteDAO {
         }
     }
 
+    public static boolean reemplazarTelefonos(String idCliente, List<String> nuevosTelefonos) {
+        String sqlBorrar = "DELETE FROM telefonos_cliente WHERE id_cliente = ?";
+        String sqlInsertar = "INSERT INTO telefonos_cliente (id_cliente, telefono) VALUES (?, ?)";
+
+        try (Connection con = ConexionDB.getConexion()) {
+            con.setAutoCommit(false);
+
+            try (PreparedStatement psDel = con.prepareStatement(sqlBorrar); PreparedStatement psIns = con.prepareStatement(sqlInsertar)) {
+
+                // 1️⃣ Borrar todos los teléfonos actuales
+                psDel.setString(1, idCliente);
+                psDel.executeUpdate();
+
+                // 2️⃣ Insertar los nuevos teléfonos si existen
+                if (nuevosTelefonos != null && !nuevosTelefonos.isEmpty()) {
+                    for (String tel : nuevosTelefonos) {
+                        psIns.setString(1, idCliente);
+                        psIns.setString(2, tel);
+                        psIns.addBatch();
+                    }
+                    psIns.executeBatch();
+                }
+
+                con.commit();
+                return true;
+
+            } catch (SQLException e) {
+                con.rollback();
+                e.printStackTrace();
+                return false;
+            } finally {
+                con.setAutoCommit(true);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     //Acceso a contenido de tabla clientes
     public static List<Cliente> obtenerTodosClientes() {
         List<Cliente> clientes = new ArrayList<>();

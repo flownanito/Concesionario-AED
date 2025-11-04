@@ -74,7 +74,6 @@ public class ClienteForm extends JDialog {
             }
         });
 
-        
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("NIF:"), c);
@@ -108,7 +107,6 @@ public class ClienteForm extends JDialog {
             }
         });
 
-        
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Nombre completo:"), c);
@@ -137,7 +135,6 @@ public class ClienteForm extends JDialog {
             }
         });
 
-        
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Dirección:"), c);
@@ -171,7 +168,6 @@ public class ClienteForm extends JDialog {
             }
         });
 
-        
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Ciudad residencia:"), c);
@@ -220,11 +216,41 @@ public class ClienteForm extends JDialog {
         JButton btnBorrarTelefonos = new JButton("✎");
         c.gridx = 2;
         form.add(btnBorrarTelefonos, c);
-        
-        
-        
-        
-        
+        btnBorrarTelefonos.addActionListener(e -> {
+            String id = tfId.getText().trim();
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe existir un ID de cliente para modificar sus teléfonos.");
+                return;
+            }
+
+            // Validar que haya teléfonos escritos
+            java.util.List<String> nuevosTelefonos = new ArrayList<>();
+            for (JTextField f : telefonoFields) {
+                String tel = f.getText().trim();
+                if (!tel.isEmpty()) {
+                    if (!Validador.validarTelefono(tel)) {
+                        JOptionPane.showMessageDialog(this, "Teléfono no válido. Debe tener exactamente 9 números.");
+                        return;
+                    }
+                    nuevosTelefonos.add(tel);
+                }
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "¿Deseas reemplazar todos los teléfonos de este cliente?",
+                    "Confirmar reemplazo de teléfonos",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                boolean ok = ClienteDAO.reemplazarTelefonos(id, nuevosTelefonos);
+                if (ok) {
+                    JOptionPane.showMessageDialog(this, "Teléfonos actualizados correctamente.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al actualizar teléfonos. Verifique el ID del cliente.");
+                }
+            }
+        });
+
         c.gridx = 0;
         c.gridy++;
         c.gridwidth = 2;
