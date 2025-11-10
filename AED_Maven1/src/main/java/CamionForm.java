@@ -28,7 +28,7 @@ public class CamionForm extends JDialog {
         c.gridy = 0;
 
         tfId = new JTextField(12);
-        tfId.setEditable(false);
+        tfId.setEditable(true);
 
         // Marca / Modelo
         cbMarca = new JComboBox<>(DataStore.MARCAS_MODELOS.keySet().toArray(new String[0]));
@@ -45,31 +45,120 @@ public class CamionForm extends JDialog {
         form.add(new JLabel("ID camión:"), c);
         c.gridx = 1;
         form.add(tfId, c);
+        c.gridx = 1;
+        JButton btnBorrarCliente = new JButton("🗑️");
+        c.gridx = 2;
+        form.add(btnBorrarCliente, c);
+        /*        btnBorrarCamion.addActionListener(e -> {
+            String id = tfId.getText().trim();
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe existir un ID de cliente para borrar.");
+                return;
+            }
+         */
+
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Marca:"), c);
         c.gridx = 1;
         form.add(cbMarca, c);
+
+        /*btnActualizarNIF.addActionListener(e -> {
+            String id = tfId.getText().trim();
+            String nuevoNif = tfNif.getText().trim();
+
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe existir un ID de cliente para actualizar.");
+                return;
+            }
+
+            boolean ok = ClienteDAO.actualizarNIF(id, nuevoNif);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "NIF actualizado correctamente.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar. Verifique el ID del cliente.");
+            }
+        });*/
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Modelo:"), c);
         c.gridx = 1;
         form.add(cbModelo, c);
+        c.gridx = 1;
+        JButton btnActualizarModelo = new JButton("✎");
+        
+
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Color:"), c);
         c.gridx = 1;
         form.add(cbColor, c);
+        c.gridx = 1;
+        JButton btnActualizarColor = new JButton("✎");
+        c.gridx = 2;
+        form.add(btnActualizarColor, c);
+        btnActualizarColor.addActionListener(e -> {
+            String id = tfId.getText().trim();
+            String nuevoColor = (String) cbColor.getSelectedItem();
+
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe existir un ID de camión para actualizar.");
+                return;
+            }
+
+            
+            
+            boolean ok = CamionDAO.actualizarColor(id, nuevoColor);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Modelo actualizado correctamente.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar. Verifique el ID del camión.");
+            }
+        });
+
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Precio venta:"), c);
         c.gridx = 1;
         form.add(tfPrecioVenta, c);
+        c.gridx = 1;
+        JButton btnActualizarPrecio = new JButton("✎");
+        c.gridx = 2;
+        form.add(btnActualizarPrecio, c);
+        
+        
+
         c.gridx = 0;
         c.gridy++;
         form.add(new JLabel("Matricula:"), c);
         c.gridx = 1;
         form.add(tfMatricula, c);
+        c.gridx = 1;
+        JButton btnActualizarMatricula = new JButton("✎");
+        c.gridx = 2;
+        form.add(btnActualizarMatricula, c);
+        btnActualizarMatricula.addActionListener(e -> {
+            String id = tfId.getText().trim();
+            String nuevoMatricula = tfMatricula.getText().trim();
+
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe existir un ID de camión para actualizar.");
+                return;
+            }
+
+            if (!nuevoMatricula.matches("^[0-9]{4}\\s[A-Z]{3}$")) {
+                JOptionPane.showMessageDialog(this, "Matricula no valida. Ej(1234 ABC).");
+                return;
+            }
+            
+            boolean ok = CamionDAO.actualizarMatricula(id, nuevoMatricula);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Matricula actualizada correctamente.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar. Verifique el ID del camión.");
+            }
+        });
+        
 
         // Botón generar ID (simula que la BD lo generaría)
         JButton btnGenerarId = new JButton("Generar ID (según marca/modelo)");
@@ -110,7 +199,6 @@ public class CamionForm extends JDialog {
                 JOptionPane.showMessageDialog(this, "Precio no válido. Usa formato numérico con punto decimal (ej: 100.00).");
                 return;
             }*/
-
             // Si todo es correcto
             Camion cobj = new Camion();
             cobj.setId(tfId.getText().trim());

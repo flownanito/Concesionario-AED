@@ -30,6 +30,33 @@ public class CamionDAO {
             return false;
         }
     }
+     
+    public static boolean actualizarColor (String idCamion, String nuevoColor) {
+        String sql = "UPDATE camion SET color = ? WHERE id_camion = ?";
+        try (Connection con = ConexionDB.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nuevoColor);
+            ps.setString(2, idCamion);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public static boolean actualizarMatricula (String idCamion, String nuevoMatricula) {
+        String sql = "UPDATE camion SET matricula = ? WHERE id_camion = ?";
+        try (Connection con = ConexionDB.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nuevoMatricula);
+            ps.setString(2, idCamion);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
+    
     
     //Acceso a contenido de tabla camiones
     public static List<Camion> obtenerTodosCamiones() {
