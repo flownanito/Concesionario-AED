@@ -1,3 +1,4 @@
+
 import Models.Revision;
 import DAO.RevisionDAO;
 import javax.swing.*;
@@ -7,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class NuevaRevision extends JDialog {
+
     private JTextField tfIdCliente, tfIdCamion;
     private Map<String, JCheckBox> checks = new LinkedHashMap<>();
     private JTextArea taDetalles;
@@ -18,22 +20,22 @@ public class NuevaRevision extends JDialog {
         setLayout(new BorderLayout());
 
         // Panel superior para IDs
-        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT,10,10));
-        top.add(new JLabel("ID Cliente:")); 
-        tfIdCliente = new JTextField(10); 
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        top.add(new JLabel("ID Cliente:"));
+        tfIdCliente = new JTextField(10);
         top.add(tfIdCliente);
-        top.add(new JLabel("ID Camión:")); 
-        tfIdCamion = new JTextField(10); 
+        top.add(new JLabel("ID Camión:"));
+        tfIdCamion = new JTextField(10);
         top.add(tfIdCamion);
         add(top, BorderLayout.NORTH);
 
         // Checklist
         String[] items = {
-            "frenos","aceite","agua","remolque","filtro_combustion",
-            "cabina","alineación","caja_cambios","correa",
-            "neumáticos","filtro_aire"
+            "frenos", "aceite", "agua", "remolque", "filtro_combustion",
+            "cabina", "alineación", "caja_cambios", "correa",
+            "neumáticos", "filtro_aire"
         };
-        JPanel center = new JPanel(new GridLayout(0,2,8,8));
+        JPanel center = new JPanel(new GridLayout(0, 2, 8, 8));
         center.setBorder(BorderFactory.createTitledBorder("Checklist (marcar si revisado)"));
         for (String it : items) {
             JCheckBox cb = new JCheckBox(it);
@@ -44,7 +46,7 @@ public class NuevaRevision extends JDialog {
         // Panel de detalles
         JPanel panelDetalles = new JPanel(new BorderLayout());
         panelDetalles.setBorder(BorderFactory.createTitledBorder("Detalles de revisión (si es necesario)"));
-        taDetalles = new JTextArea(6,40);
+        taDetalles = new JTextArea(6, 40);
         JScrollPane sp = new JScrollPane(taDetalles);
         panelDetalles.add(sp, BorderLayout.CENTER);
 
@@ -56,14 +58,54 @@ public class NuevaRevision extends JDialog {
 
         // Botones
         JPanel bottom = new JPanel();
+        JButton actualizar = new JButton("Actualizar");
+        bottom.add(actualizar);
+
         JButton guardar = new JButton("Guardar Revisión");
+        bottom.add(guardar);
+
         JButton cancelar = new JButton("Cerrar");
-        bottom.add(guardar); 
         bottom.add(cancelar);
         add(bottom, BorderLayout.SOUTH);
 
         guardar.addActionListener(e -> guardarRevision());
         cancelar.addActionListener(e -> dispose());
+
+        actualizar.addActionListener(e -> {
+
+            String idCliente = tfIdCliente.getText().trim();
+            String idCamion = tfIdCamion.getText().trim();
+
+            if (idCliente.isEmpty() || idCamion.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debes introducir Cliente y Camión.");
+                return;
+            }
+
+            Revision r = new Revision();
+            r.setIdCliente(idCliente);
+            r.setIdCamion(idCamion);
+            r.setFechaRevision(LocalDate.now());
+            Map<String, Boolean> checklist = new LinkedHashMap<>();
+            checks.forEach((k, v) -> checklist.put(k, v.isSelected()));
+            r.setChecklist(checklist);
+            r.setDetalles(taDetalles.getText().trim());
+
+            boolean ok = RevisionDAO.actualizarRevision(r);
+
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Revisión actualizada correctamente.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar la revisión.");
+            }
+
+            // Limpia los campos
+            tfIdCliente.setText("");
+            tfIdCamion.setText("");
+            checks.values().forEach(cb -> cb.setSelected(false));
+            taDetalles.setText("");
+        
+        });
+
     }
 
     //  Método actualizado para guardar en la base de datos
@@ -82,7 +124,7 @@ public class NuevaRevision extends JDialog {
         r.setIdCamion(idCamion);
         r.setFechaRevision(LocalDate.now()); //  Fecha actual
         Map<String, Boolean> checklist = new LinkedHashMap<>();
-        checks.forEach((k,v) -> checklist.put(k, v.isSelected()));
+        checks.forEach((k, v) -> checklist.put(k, v.isSelected()));
         r.setChecklist(checklist);
         r.setDetalles(taDetalles.getText().trim());
 
@@ -96,7 +138,7 @@ public class NuevaRevision extends JDialog {
         }
 
         // limpiar campos
-        tfIdCliente.setText(""); 
+        tfIdCliente.setText("");
         tfIdCamion.setText("");
         checks.values().forEach(cb -> cb.setSelected(false));
         taDetalles.setText("");

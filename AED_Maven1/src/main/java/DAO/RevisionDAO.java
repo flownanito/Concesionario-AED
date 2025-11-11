@@ -13,7 +13,7 @@ public class RevisionDAO {
 
     // Inserta los detalles en tabla detalles_revision
     public static boolean insertarRevision(Revision r) {
-        String sqlRevision = "INSERT INTO revision (id_camion, fecha_revision) VALUES (?, ?)";
+        String sqlRevision = "INSERT INTO revision (id_cliente, id_camion, fecha_revision) VALUES (?, ?, ?)";
         String sqlDetalles = """
             INSERT INTO detalles_revision (
                 id_revision, frenos, aceite, agua, remolque, filtro_combustible,
@@ -27,8 +27,9 @@ public class RevisionDAO {
             //Insertar revisión principal
             int idRevisionGenerado = -1;
             try (PreparedStatement psRev = con.prepareStatement(sqlRevision, Statement.RETURN_GENERATED_KEYS)) {
-                psRev.setString(1, r.getIdCamion());
-                psRev.setDate(2, Date.valueOf(r.getFechaRevision()));
+                psRev.setString(1, r.getIdCliente());
+                psRev.setString(2, r.getIdCamion());
+                psRev.setDate(3, Date.valueOf(r.getFechaRevision()));
                 psRev.executeUpdate();
 
                 ResultSet rs = psRev.getGeneratedKeys();
@@ -75,10 +76,10 @@ public class RevisionDAO {
     }
 
     public static List<Revision> buscarRevisiones(String idCliente, String idCamion) {
-    List<Revision> revisiones = new ArrayList<>();
+        List<Revision> revisiones = new ArrayList<>();
 
-    String sql = """
-        SELECT r.id_revision, r.id_camion, r.fecha_revision,
+        String sql = """
+        SELECT r.id_revision, r.id_cliente, r.id_camion, r.fecha_revision,
                d.frenos, d.aceite, d.agua, d.remolque, d.filtro_combustible,
                d.alineacion, d.cabina, d.caja_de_cambios, d.correa,
                d.neumaticos, d.filtro_aire, d.extra
@@ -88,51 +89,97 @@ public class RevisionDAO {
         ORDER BY r.id_revision DESC
     """;
 
-    try (Connection con = ConexionDB.getConexion();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = ConexionDB.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setString(1, idCliente);
-        ps.setString(2, idCamion);
-        ResultSet rs = ps.executeQuery();
+            ps.setString(1, idCliente);
+            ps.setString(2, idCamion);
+            ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
-            Revision r = new Revision();
-            r.setId(String.valueOf(rs.getInt("id_revision")));
-            r.setIdCliente(idCliente);
-            r.setIdCamion(rs.getString("id_camion"));
+            while (rs.next()) {
+                Revision r = new Revision();
+                r.setId(String.valueOf(rs.getInt("id_revision")));
+                r.setIdCliente(rs.getString("id_cliente"));
+                r.setIdCamion(rs.getString("id_camion"));
 
-            java.sql.Date fechaSQL = rs.getDate("fecha_revision");
-            if (fechaSQL != null) {
-                r.setFechaRevision(fechaSQL.toLocalDate());
+                java.sql.Date fechaSQL = rs.getDate("fecha_revision");
+                if (fechaSQL != null) {
+                    r.setFechaRevision(fechaSQL.toLocalDate());
+                }
+
+                //Cargar datos de la tabla detalles_revision directamente
+                Map<String, Boolean> checklist = new LinkedHashMap<>();
+                checklist.put("frenos", rs.getBoolean("frenos"));
+                checklist.put("aceite", rs.getBoolean("aceite"));
+                checklist.put("agua", rs.getBoolean("agua"));
+                checklist.put("remolque", rs.getBoolean("remolque"));
+                checklist.put("filtro_combustible", rs.getBoolean("filtro_combustible"));
+                checklist.put("alineacion", rs.getBoolean("alineacion"));
+                checklist.put("cabina", rs.getBoolean("cabina"));
+                checklist.put("caja_cambios", rs.getBoolean("caja_de_cambios"));
+                checklist.put("correa", rs.getBoolean("correa"));
+                checklist.put("neumaticos", rs.getBoolean("neumaticos"));
+                checklist.put("filtro_aire", rs.getBoolean("filtro_aire"));
+                r.setChecklist(checklist);
+
+                // ✅ Guardar texto del campo extra
+                r.setDetalles(rs.getString("extra"));
+
+                revisiones.add(r);
             }
 
-            //Cargar datos de la tabla detalles_revision directamente
-            Map<String, Boolean> checklist = new LinkedHashMap<>();
-            checklist.put("frenos", rs.getBoolean("frenos"));
-            checklist.put("aceite", rs.getBoolean("aceite"));
-            checklist.put("agua", rs.getBoolean("agua"));
-            checklist.put("remolque", rs.getBoolean("remolque"));
-            checklist.put("filtro_combustible", rs.getBoolean("filtro_combustible"));
-            checklist.put("alineacion", rs.getBoolean("alineacion"));
-            checklist.put("cabina", rs.getBoolean("cabina"));
-            checklist.put("caja_cambios", rs.getBoolean("caja_de_cambios"));
-            checklist.put("correa", rs.getBoolean("correa"));
-            checklist.put("neumaticos", rs.getBoolean("neumaticos"));
-            checklist.put("filtro_aire", rs.getBoolean("filtro_aire"));
-            r.setChecklist(checklist);
-
-            // ✅ Guardar texto del campo extra
-            r.setDetalles(rs.getString("extra"));
-
-            revisiones.add(r);
+        } catch (SQLException e) {
+            System.out.println("Error SQL buscarRevisiones(): " + e.getMessage());
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        System.out.println("Error SQL buscarRevisiones(): " + e.getMessage());
-        e.printStackTrace();
+        return revisiones;
     }
 
-    return revisiones;
-}
+    public static boolean actualizarRevision(Revision r) {
+        String sql = """
+        UPDATE detalles_revision d
+        JOIN revision rev ON rev.id_revision = d.id_revision
+        SET rev.fecha_revision = ?, 
+            d.frenos = ?, d.aceite = ?, d.agua = ?, d.remolque = ?, d.filtro_combustible = ?,
+            d.alineacion = ?, d.cabina = ?, d.caja_de_cambios = ?, d.correa = ?, d.neumaticos = ?,
+            d.filtro_aire = ?, d.extra = ?
+        WHERE rev.id_revision = (
+            SELECT id_revision FROM revision
+            WHERE id_cliente = ? AND id_camion = ?
+            ORDER BY id_revision DESC
+            LIMIT 1
+        )
+    """;
+
+        try (Connection con = ConexionDB.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            Map<String, Boolean> c = r.getChecklist();
+
+            ps.setDate(1, Date.valueOf(r.getFechaRevision()));
+            ps.setBoolean(2, c.getOrDefault("frenos", false));
+            ps.setBoolean(3, c.getOrDefault("aceite", false));
+            ps.setBoolean(4, c.getOrDefault("agua", false));
+            ps.setBoolean(5, c.getOrDefault("remolque", false));
+            ps.setBoolean(6, c.getOrDefault("filtro_combustion", false));
+            ps.setBoolean(7, c.getOrDefault("alineación", false));
+            ps.setBoolean(8, c.getOrDefault("cabina", false));
+            ps.setBoolean(9, c.getOrDefault("caja_cambios", false));
+            ps.setBoolean(10, c.getOrDefault("correa", false));
+            ps.setBoolean(11, c.getOrDefault("neumáticos", false));
+            ps.setBoolean(12, c.getOrDefault("filtro_aire", false));
+            ps.setString(13, r.getDetalles());
+
+            ps.setString(14, r.getIdCliente());
+            ps.setString(15, r.getIdCamion());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error SQL actualizarRevisionPorClienteCamion(): " + e.getMessage());
+            return false;
+        }
+    }
 
 }

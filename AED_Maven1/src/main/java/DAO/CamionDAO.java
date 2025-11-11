@@ -43,6 +43,18 @@ public class CamionDAO {
         }
     }
     
+    public static boolean actualizarPrecio (String idCamion, Double nuevoPrecio) {
+        String sql = "UPDATE camion SET precio_venta = ? WHERE id_camion = ?";
+        try (Connection con = ConexionDB.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDouble(1, nuevoPrecio);
+            ps.setString(2, idCamion);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
     public static boolean actualizarMatricula (String idCamion, String nuevoMatricula) {
         String sql = "UPDATE camion SET matricula = ? WHERE id_camion = ?";
         try (Connection con = ConexionDB.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
